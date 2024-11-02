@@ -1,0 +1,48 @@
+#!/bin/bash
+
+########################################################################################################## 
+# Script to obtain all the final Gibbs free energies from .out's in a directory and print to a text file #
+##########################################################################################################
+
+## Create the output file if it doesn't already exist.
+
+if [[ ! -e gibbsenergies.txt ]]; then
+    touch gibbsenergies.txt
+    echo "File created - gibbsenergies.txt"
+else
+    rm gibbsenergies.txt
+    touch gibbsenergies.txt
+    echo "File appended - gibbsenergies.txt"
+fi
+
+## Go to each directory: for every .out file, change the variables for final Gibbs free energy and Gibbs 
+## minus electronic energy to the value in that .out file. Then print to our gibbsenergies.txt.
+
+for dir in */; do
+    cd "$dir" || continue
+
+	## Check if there are any .out files. By using shopt we can toggle between bash shell options.
+	## In this case, nullglob allows patterns which contain no .out files to expand to a "null string".
+	## We put all the .out files in an array, then check to see if the number is > 0 and run.
+
+    shopt -s nullglob
+    out_files=(*.out)
+
+    if [[ ${#out_files[@]} -gt 0 ]]; then
+        for file in "${out_files[@]}"; do
+            final_gibbs=$(grep "Final Gibbs free energy" "$file")
+            gibbs_min_el=$(grep "G-E(el)" "$file")
+            if [[ -n "$final_gibbs" ]]; then
+                echo "Directory: ${dir%/}" >> ../gibbsenergies.txt
+				echo "File: $file" >> ../gibbsenergies.txt
+                echo "$final_gibbs" >> ../gibbsenergies.txt
+                echo "$gibbs_min_el" >> ../gibbsenergies.txt
+				echo "" >> ../gibbsenergies.txt
+            fi
+        done
+    fi
+    cd ..
+done
+
+# Tell user that writing has finished
+echo "Writing to file complete"
