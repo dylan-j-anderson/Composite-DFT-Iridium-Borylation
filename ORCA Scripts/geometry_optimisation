@@ -1,0 +1,11 @@
+! LARGEPRINT TIGHTSCF TIGHTOPT FREQ wB97X-3c
+
+%pal
+nprocs xx
+end
+
+%maxcore 3000
+
+*xyz 0 1
+[coordinates]
+*
