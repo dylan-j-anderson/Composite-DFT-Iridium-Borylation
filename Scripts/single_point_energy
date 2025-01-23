@@ -1,0 +1,16 @@
+! LARGEPRINT TIGHTSCF wB97X-D4rev def2-QZVP CPCM
+
+%pal
+nprocs xx
+end
+
+%maxcore 3000
+
+%cpcm
+smd true
+SMDsolvent "thf"
+end
+
+*xyz 0 1
+[coordinates]
+*
